@@ -62,3 +62,7 @@ resetBtn.addEventListener("click", () => {
     sec = 0;
     secondsBlock.textContent = 0;
 });
+
+console.log(
+    'github'
+)
