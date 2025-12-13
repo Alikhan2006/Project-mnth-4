@@ -1,16 +1,14 @@
-// -------------------- 1. ВАЛИДАТОР GMAIL --------------------
-
 const gmailInput = document.querySelector("#gmail_input");
 const gmailButton = document.querySelector("#gmail_button");
 const gmailResult = document.querySelector("#gmail_result");
 
 gmailButton.addEventListener("click", () => {
     const value = gmailInput.value.trim();
-    const gmailRegex = /^[a-zA-Z0-9._]+@gmail\.com$/;
+    const gmailRegexp = /^[a-zA-Z0-9._]+@gmail\.com$/;
 
-    if (gmailRegex.test(value)) {
+    if (gmailRegexp.test(value)) {
         gmailResult.textContent = "Почта валидная ✓";
-        gmailResult.style.color = "limegreen";
+        gmailResult.style.color = "green";
     } else {
         gmailResult.textContent = "Неверный Gmail!";
         gmailResult.style.color = "red";
@@ -18,49 +16,23 @@ gmailButton.addEventListener("click", () => {
 });
 
 
-// -------------------- 2. КРАСНЫЙ КВАДРАТ 2.0 --------------------
-
 const child = document.querySelector(".child_block");
 const parent = document.querySelector(".parent_block");
 
-let x = 0;
-let y = 0;
-let direction = "right"; // right → down → left → up
+let position = 0;
 
-function moveSquare() {
-    const maxX = parent.clientWidth - child.clientWidth;
-    const maxY = parent.clientHeight - child.clientHeight;
+function moveBlock() {
+    const max = parent.clientWidth - child.clientWidth;
 
-    if (direction === "right") {
-        if (x < maxX) x++;
-        else direction = "down";
+    if (position <= max) {
+        child.style.left = position + "px";
+        position += 2;  // скорость движения
+        setTimeout(moveBlock, 10); // рекурсия
     }
-
-    else if (direction === "down") {
-        if (y < maxY) y++;
-        else direction = "left";
-    }
-
-    else if (direction === "left") {
-        if (x > 0) x--;
-        else direction = "up";
-    }
-
-    else if (direction === "up") {
-        if (y > 0) y--;
-        else direction = "right";
-    }
-
-    child.style.left = x + "px";
-    child.style.top = y + "px";
-
-    requestAnimationFrame(moveSquare);
 }
 
-moveSquare();
+moveBlock();
 
-
-// -------------------- 3. СЕКУНДОМЕР --------------------
 
 const secondsBlock = document.querySelector("#seconds");
 const startBtn = document.querySelector("#start");
@@ -68,33 +40,25 @@ const stopBtn = document.querySelector("#stop");
 const resetBtn = document.querySelector("#reset");
 
 let sec = 0;
-let timer = null;
-
-function updateSeconds() {
-    secondsBlock.textContent = sec;
-}
+let intervalId = null;
 
 startBtn.addEventListener("click", () => {
-    if (timer !== null) return; // защита от повторного запуска
-
-    timer = setInterval(() => {
-        sec++;
-        updateSeconds();
-    }, 1000);
+    if (!intervalId) {
+        intervalId = setInterval(() => {
+            sec++;
+            secondsBlock.textContent = sec;
+        }, 1000);
+    }
 });
 
 stopBtn.addEventListener("click", () => {
-    clearInterval(timer);
-    timer = null;
+    clearInterval(intervalId);
+    intervalId = null;
 });
 
 resetBtn.addEventListener("click", () => {
-    clearInterval(timer);
-    timer = null;
+    clearInterval(intervalId);
+    intervalId = null;
     sec = 0;
-    updateSeconds();
+    secondsBlock.textContent = 0;
 });
-
-
-
-
