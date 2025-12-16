@@ -1,3 +1,4 @@
+// ===== Красный квадрат =====
 const parentBlock = document.querySelector('.parent_block');
 const childBlock = document.querySelector('.child_block');
 
@@ -29,10 +30,9 @@ function moveBlock() {
 
     requestAnimationFrame(moveBlock);
 }
-
 moveBlock();
 
-
+// ===== Секундомер =====
 const secondsElement = document.getElementById('seconds');
 const startBtn = document.getElementById('start');
 const stopBtn = document.getElementById('stop');
@@ -47,7 +47,6 @@ function renderCounter() {
 
 startBtn.addEventListener('click', () => {
     if (intervalId !== null) return;
-
     intervalId = setInterval(() => {
         counter++;
         renderCounter();
@@ -66,17 +65,15 @@ resetBtn.addEventListener('click', () => {
     renderCounter();
 });
 
-
+// ===== Авто таб-слайдер =====
 const tabs = document.querySelectorAll('.tabheader__item');
 const tabsContent = document.querySelectorAll('.tabcontent');
 
 let tabIndex = 0;
 
 function hideTabs() {
-    tabsContent.forEach(item => {
-        item.classList.add('hide');
-        item.classList.remove('show');
-    });
+    tabsContent.forEach(item => item.classList.add('hide'));
+    tabsContent.forEach(item => item.classList.remove('show'));
     tabs.forEach(tab => tab.classList.remove('tabheader__item_active'));
 }
 
@@ -86,17 +83,19 @@ function showTab(i) {
     tabs[i].classList.add('tabheader__item_active');
 }
 
-hideTabs();
-showTab(tabIndex);
-
-setInterval(() => {
-    tabIndex++;
-    if (tabIndex >= tabs.length) tabIndex = 0;
+if (tabs.length > 0) {
     hideTabs();
     showTab(tabIndex);
-}, 3000);
 
+    setInterval(() => {
+        tabIndex++;
+        if (tabIndex >= tabs.length) tabIndex = 0;
+        hideTabs();
+        showTab(tabIndex);
+    }, 3000);
+}
 
+// ===== Модальное окно =====
 const modal = document.querySelector('.modal');
 const modalClose = document.querySelector('.modal_close');
 
@@ -114,7 +113,7 @@ function closeModal() {
 
 modalClose.addEventListener('click', closeModal);
 
-// --- 4.1 по скроллу один раз ---
+// Открыть по скроллу один раз
 function showModalOnScroll() {
     if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
         openModal();
@@ -123,43 +122,71 @@ function showModalOnScroll() {
 }
 window.addEventListener('scroll', showModalOnScroll);
 
-setTimeout(() => {
-    openModal();
-}, 10000);
+// Открыть через 10 секунд после загрузки
+setTimeout(() => openModal(), 10000);
 
+// ===== XHR Запросы (JSON) =====
+const xhrCharacters = new XMLHttpRequest();
+xhrCharacters.open('GET', '../data/characters.json');
+xhrCharacters.setRequestHeader('Content-Type', 'application/json');
+xhrCharacters.send();
 
-const xhr = new XMLHttpRequest();
-xhr.open('GET', '../data/characters.json');
-xhr.setRequestHeader('Content-type', 'application/json');
-xhr.send();
-
-xhrx.onload = () => {
-    const data = JSON.parse(xhr.response);
-
-    const block = document.querySelector('.characters-list');
-    block.innerHTML = "";
-
-    data.forEach(item => {
-        block.innerHTML += `
-            <div class="card">
-                <img src="${item.photo}" alt="${item.name}" />
-                <h3>${item.name}</h3>
-                <p>Возраст: ${item.age}</p>
-            </div>
-        `;
-    });
+xhrCharacters.onload = () => {
+    if (xhrCharacters.status === 200) {
+        const data = JSON.parse(xhrCharacters.response);
+        const block = document.querySelector('.characters-list');
+        block.innerHTML = '';
+        data.forEach(item => {
+            block.innerHTML += `
+                <div class="card">
+                    <img src="${item.photo}" alt="${item.name}" />
+                    <h3>${item.name}</h3>
+                    <p>Возраст: ${item.age}</p>
+                </div>
+            `;
+        });
+    }
 };
-function getJSON() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', '../data/data.json');
-    xhr.responseType = 'json';
-    xhr.send();
 
-    xhr.onload = () => {
-        console.log(xhr.response);
-    };
+const xhrAny = new XMLHttpRequest();
+xhrAny.open('GET', '../data/data.json');
+xhrAny.responseType = 'json';
+xhrAny.send();
+
+xhrAny.onload = () => {
+    if (xhrAny.status === 200) console.log(xhrAny.response);
+};
+
+// ===== Конвертер валют (SOM, USD, EUR) =====
+const somInput = document.getElementById('som');
+const usdInput = document.getElementById('usd');
+const eurInput = document.getElementById('eur');
+
+const rates = {
+    som: 1,
+    usd: 87,   // 1 USD = 87 SOM
+    eur: 100   // 1 EUR = 100 SOM
+};
+
+function convertFromSom() {
+    const som = parseFloat(somInput.value) || 0;
+    usdInput.value = (som / rates.usd).toFixed(2);
+    eurInput.value = (som / rates.eur).toFixed(2);
+}
+function convertFromUsd() {
+    const usd = parseFloat(usdInput.value) || 0;
+    somInput.value = (usd * rates.usd).toFixed(2);
+    eurInput.value = ((usd * rates.usd) / rates.eur).toFixed(2);
+}
+function convertFromEur() {
+    const eur = parseFloat(eurInput.value) || 0;
+    somInput.value = (eur * rates.eur).toFixed(2);
+    usdInput.value = ((eur * rates.eur) / rates.usd).toFixed(2);
 }
 
-getJSON();
+somInput.addEventListener('input', convertFromSom);
+usdInput.addEventListener('input', convertFromUsd);
+eurInput.addEventListener('input', convertFromEur);
+
 
 
