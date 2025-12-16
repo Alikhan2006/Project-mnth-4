@@ -7,7 +7,7 @@ let positionY = 0;
 const maxX = parentBlock.clientWidth - childBlock.offsetWidth;
 const maxY = parentBlock.clientHeight - childBlock.offsetHeight;
 
-let direction = 'right'; // движение: right → down → left → up
+let direction = 'right';
 
 function moveBlock() {
     if (direction === 'right') {
@@ -86,11 +86,9 @@ function showTab(i) {
     tabs[i].classList.add('tabheader__item_active');
 }
 
-// Инициализация
 hideTabs();
 showTab(tabIndex);
 
-// Авто переключение каждые 3 секунды
 setInterval(() => {
     tabIndex++;
     if (tabIndex >= tabs.length) tabIndex = 0;
@@ -128,4 +126,40 @@ window.addEventListener('scroll', showModalOnScroll);
 setTimeout(() => {
     openModal();
 }, 10000);
+
+
+const xhr = new XMLHttpRequest();
+xhr.open('GET', '../data/characters.json');
+xhr.setRequestHeader('Content-type', 'application/json');
+xhr.send();
+
+xhrx.onload = () => {
+    const data = JSON.parse(xhr.response);
+
+    const block = document.querySelector('.characters-list');
+    block.innerHTML = "";
+
+    data.forEach(item => {
+        block.innerHTML += `
+            <div class="card">
+                <img src="${item.photo}" alt="${item.name}" />
+                <h3>${item.name}</h3>
+                <p>Возраст: ${item.age}</p>
+            </div>
+        `;
+    });
+};
+function getJSON() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '../data/data.json');
+    xhr.responseType = 'json';
+    xhr.send();
+
+    xhr.onload = () => {
+        console.log(xhr.response);
+    };
+}
+
+getJSON();
+
 

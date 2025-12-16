@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Harry Potter",
+    "age": 17,
+    "photo": "https://upload.wikimedia.org/wikipedia/en/d/d7/Harry_Potter_character_poster.jpg"
+  },
+  {
+    "name": "Hermione Granger",
+    "age": 17,
+    "photo": "https://upload.wikimedia.org/wikipedia/en/d/d3/Hermione_Granger_poster.jpg"
+  },
+  {
+    "name": "Ron Weasley",
+    "age": 17,
+    "photo": "https://upload.wikimedia.org/wikipedia/en/5/5e/Ron_Weasley_poster.jpg"
+  }
+]
