@@ -7,40 +7,28 @@ let positionY = 0;
 const maxX = parentBlock.clientWidth - childBlock.offsetWidth;
 const maxY = parentBlock.clientHeight - childBlock.offsetHeight;
 
-let direction = 'right'; // right → down → left → up
+let direction = 'right'; // движение: right → down → left → up
 
-const moveBlock = () => {
+function moveBlock() {
     if (direction === 'right') {
-        if (positionX < maxX) {
-            positionX++;
-        } else {
-            direction = 'down';
-        }
+        if (positionX < maxX) positionX++;
+        else direction = 'down';
     } else if (direction === 'down') {
-        if (positionY < maxY) {
-            positionY++;
-        } else {
-            direction = 'left';
-        }
+        if (positionY < maxY) positionY++;
+        else direction = 'left';
     } else if (direction === 'left') {
-        if (positionX > 0) {
-            positionX--;
-        } else {
-            direction = 'up';
-        }
+        if (positionX > 0) positionX--;
+        else direction = 'up';
     } else if (direction === 'up') {
-        if (positionY > 0) {
-            positionY--;
-        } else {
-            direction = 'right';
-        }
+        if (positionY > 0) positionY--;
+        else direction = 'right';
     }
 
     childBlock.style.left = positionX + 'px';
     childBlock.style.top = positionY + 'px';
 
     requestAnimationFrame(moveBlock);
-};
+}
 
 moveBlock();
 
@@ -53,12 +41,12 @@ const resetBtn = document.getElementById('reset');
 let counter = 0;
 let intervalId = null;
 
-const renderCounter = () => {
+function renderCounter() {
     secondsElement.textContent = counter;
-};
+}
 
 startBtn.addEventListener('click', () => {
-    if (intervalId !== null) return; // защита от повторного запуска
+    if (intervalId !== null) return;
 
     intervalId = setInterval(() => {
         counter++;
@@ -77,3 +65,67 @@ resetBtn.addEventListener('click', () => {
     counter = 0;
     renderCounter();
 });
+
+
+const tabs = document.querySelectorAll('.tabheader__item');
+const tabsContent = document.querySelectorAll('.tabcontent');
+
+let tabIndex = 0;
+
+function hideTabs() {
+    tabsContent.forEach(item => {
+        item.classList.add('hide');
+        item.classList.remove('show');
+    });
+    tabs.forEach(tab => tab.classList.remove('tabheader__item_active'));
+}
+
+function showTab(i) {
+    tabsContent[i].classList.add('show');
+    tabsContent[i].classList.remove('hide');
+    tabs[i].classList.add('tabheader__item_active');
+}
+
+// Инициализация
+hideTabs();
+showTab(tabIndex);
+
+// Авто переключение каждые 3 секунды
+setInterval(() => {
+    tabIndex++;
+    if (tabIndex >= tabs.length) tabIndex = 0;
+    hideTabs();
+    showTab(tabIndex);
+}, 3000);
+
+
+const modal = document.querySelector('.modal');
+const modalClose = document.querySelector('.modal_close');
+
+function openModal() {
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+modalClose.addEventListener('click', closeModal);
+
+// --- 4.1 по скроллу один раз ---
+function showModalOnScroll() {
+    if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
+        openModal();
+        window.removeEventListener('scroll', showModalOnScroll);
+    }
+}
+window.addEventListener('scroll', showModalOnScroll);
+
+setTimeout(() => {
+    openModal();
+}, 10000);
+
